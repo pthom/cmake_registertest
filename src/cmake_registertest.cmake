@@ -20,12 +20,28 @@ if (MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+# place the test targets in the same msvc solution folder
+function (crt_placetarget_insamesolutionfolder target target_with_existing_folder)
+  get_target_property(msvc_folder_target ${target} FOLDER)
+  message("msvc_folder_target is ${msvc_folder_target}")
+  if (${msvc_folder_target} MATCHES ".*NOTFOUND")
+    message("get_target_property(msvc_folder ${target_with_existing_folder} FOLDER)")
+    get_target_property(msvc_folder "${target_with_existing_folder}" FOLDER)
+    message("msvc_folder is ${msvc_folder}")
+    if (NOT ${msvc_folder} MATCHES ".*NOTFOUND")
+      set_target_properties(${target} PROPERTIES FOLDER ${msvc_folder})
+    endif()
+  endif()
+endfunction()
+
+
 function (crt_addincludepath libraryName)
   target_include_directories(${libraryName} PUBLIC ${crt_test_lib_location} )
 endfunction()
 
 function (crt_maketesttarget objectLibraryName testTargetName)
   add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_main_test_file})
+  crt_placetarget_insamesolutionfolder(${testTargetName} ${objectLibraryName})
   target_link_libraries(${testTargetName} ${crt_main_test_link})
   crt_addincludepath(${testTargetName})
   # place the test target in the same msvc solution folder
@@ -53,6 +69,7 @@ function (cmake_registertest objectLibraryName libraryName libraryType testTarge
     add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_dynamic_test_file})
     target_link_libraries(${libraryName} ${crt_dynamic_test_link})
   endif()
+  crt_placetarget_insamesolutionfolder(${libraryName} ${objectLibraryName})
   crt_addincludepath(${libraryName})
   crt_maketesttarget(${objectLibraryName} ${testTargetName})
   crt_registercmaketest(${testTargetName})
