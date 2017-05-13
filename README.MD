@@ -47,11 +47,11 @@ Two cases are possible:
 ### Case 1 : your test code resides in separate files
 
 ```cmake
-add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
+add_library(MyLibrary STATIC lib1.cpp)
 crt_registertest(
   LIBRARY MyLibrary
   OUTPUT_TEST_TARGET MyLibraryTest
-  TEST_SOURCES lib3_test.cpp lib4_test.cpp 
+  TEST_SOURCES lib1_test.cpp
 )
 ```
 
@@ -97,9 +97,8 @@ For an example, see [example_doctest](examples/example_doctest):
 
 #### Step 1 : include cmake_registertest in your project as well as your test library
 
-For example (with catch)
-* copy [catch.hpp](https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp) into your project/catch folder
-* copy [cmake_registertest](https://github.com/pthom/cmake_registertest) at the root of your project, such as shown below:
+The structure of your project should look as the tree shown below:
+
 ```
 YourProject/
 ├── CMakeLists.txt
@@ -107,9 +106,14 @@ YourProject/
 │   ├── CMakeLists.txt
 │   ├── lib1.cpp
 │   └── lib2.cpp
-├── catch
-│   ├── catch.hpp
-└── cmake_registertest/
+├── catch                         
+│   ├── catch.hpp                 # Only one of 
+├── doctest                       #  catch
+│   ├── doctest.h                 #  doctest
+├── gtest                         #  or googletest is required
+│   ├── include/gtest/gtest.h     
+|
+└── cmake_registertest/           #  copy or reference cmake_registertest as a submodule at the root of your project
    └──   src
           ├── cpp_runners
           │   ├── catch_dynamic.cpp
@@ -122,26 +126,30 @@ YourProject/
           └── crt_registertest_googletest.cmake
 ```
 
-#### Step 2 : Set your test library path:
 
+
+For example (with catch)
+* copy or reference catch, doctest, or googletest  
+
+
+
+#### Step 2 : Set your test library path:
 Inside your main `CMakeLists.txt`, set the path to the include path of your test library (catch, doctest or googletest)
-For example:
+Depending upon your test library, include one of the 3 lines below:
 ```
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/catch)
+set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/doctest)
+set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/gtest/include)
 ```
 
 #### Step 3 : Include the script in your main CMakeLists.txt file
 *After* having set `rsl_test_lib_location` include the correct script.
-For catch :
-```
+
+Depending upon your test library, include one of the 3 lines below:
+
+```cmake
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_catch.cmake")
-````
-For googletest :
-```
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_googletest.cmake")
-````
-For doctest :
-```
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_doctest.cmake")
 ````
 
@@ -155,9 +163,9 @@ enable_testing()
 
 ### Step 5 : Register tests for your library
 
-in the `CMakeLists.txt` of your library, call crt_registertest()
+in the `CMakeLists.txt` of your library, call `crt_registertest()`
 
 
-## detailed information about crt_registertest()  
+## More info
 
 See the [examples](examples)
