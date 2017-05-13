@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(example_googletest_raw)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    add_compile_options( -fPIC)
+endif()
+
 if (MSVC)
   # These lines are here to solve a link error under msvc
   # (gtest uses a static runtime and require the libs to also use it)
