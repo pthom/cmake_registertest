@@ -1,4 +1,3 @@
-#define DEBUG
 #include <iostream>
 #include "catch.hpp"
 

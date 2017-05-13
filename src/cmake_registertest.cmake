@@ -39,8 +39,8 @@ function (crt_addincludepath libraryName)
   target_include_directories(${libraryName} PUBLIC ${crt_test_lib_location} )
 endfunction()
 
-function (crt_maketesttarget objectLibraryName testTargetName)
-  add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_main_test_file})
+function (crt_maketesttarget objectLibraryName testTargetName testSources)
+  add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${testSources} ${crt_main_test_file})
   crt_placetarget_insamesolutionfolder(${testTargetName} ${objectLibraryName})
   target_link_libraries(${testTargetName} ${crt_main_test_link})
   crt_addincludepath(${testTargetName})
@@ -58,19 +58,32 @@ function (crt_registercmaketest testTargetName)
   add_test(NAME ${testTargetName} COMMAND ${testTargetName})
 endfunction()
 
-function (cmake_registertest objectLibraryName libraryName libraryType testTargetName)
-  # message("cmake_registertest " ${libraryName} ${testTargetName})
-  crt_addincludepath(${objectLibraryName})
-
-  message("libraryType=${libraryType}")
-  if (${libraryType} MATCHES "STATIC")
-    add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}>)
+function (cmake_registertest)
+  set(options 
+    INSOURCE_TEST
+  )
+  set(one_value_args
+    INPUT_OBJECT_LIBRARY
+    OUTPUT_LIBRARY_NAME
+    OUTPUT_LIBRARY_TYPE
+    OUTPUT_TEST_TARGET
+    )
+  set(multi_value_args
+    TEST_SOURCES
+  )
+  
+  cmake_parse_arguments(crt "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
+  
+  message("cmake_registertest " ${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_TEST_TARGET})
+  crt_addincludepath(${crt_INPUT_OBJECT_LIBRARY})
+  if (${crt_OUTPUT_LIBRARY_TYPE} MATCHES "STATIC")
+    add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}>)
   else()
-    add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_dynamic_test_file})
-    target_link_libraries(${libraryName} ${crt_dynamic_test_link})
+    add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}> ${crt_dynamic_test_file})
+    target_link_libraries(${crt_OUTPUT_LIBRARY_NAME} ${crt_dynamic_test_link})
   endif()
-  crt_placetarget_insamesolutionfolder(${libraryName} ${objectLibraryName})
-  crt_addincludepath(${libraryName})
-  crt_maketesttarget(${objectLibraryName} ${testTargetName})
-  crt_registercmaketest(${testTargetName})
+  crt_placetarget_insamesolutionfolder(${crt_OUTPUT_LIBRARY_NAME} ${crt_INPUT_OBJECT_LIBRARY})
+  crt_addincludepath(${crt_OUTPUT_LIBRARY_NAME})
+  crt_maketesttarget(${crt_INPUT_OBJECT_LIBRARY} ${crt_OUTPUT_TEST_TARGET} "${crt_TEST_SOURCES}")
+  crt_registercmaketest(${crt_OUTPUT_TEST_TARGET})
 endfunction()
