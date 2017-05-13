@@ -39,27 +39,26 @@ function (crt_addincludepath libraryName)
   target_include_directories(${libraryName} PUBLIC ${crt_test_lib_location} )
 endfunction()
 
-function (crt_maketesttarget objectLibraryName testTargetName testSources)
-  add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${testSources} ${crt_main_test_file})
-  crt_placetarget_insamesolutionfolder(${testTargetName} ${objectLibraryName})
+function (crt_maketesttarget flagTestInPlace libraryName testTargetName testSources)
+  if (flagTestInPlace)
+    add_executable(${testTargetName} $<TARGET_OBJECTS:${libraryName}> ${testSources} ${crt_main_test_file})
+  else()
+    add_executable(${testTargetName} ${testSources} ${crt_main_test_file})
+    target_link_libraries(${testTargetName} ${libraryName})
+  endif()
+  crt_placetarget_insamesolutionfolder(${testTargetName} ${libraryName})
   target_link_libraries(${testTargetName} ${crt_main_test_link})
   crt_addincludepath(${testTargetName})
-  # place the test target in the same msvc solution folder
-  get_target_property(msvc_folder_testtarget ${testTargetName} FOLDER)
-  if (${msvc_folder_testtarget} MATCHES ".*NOTFOUND")
-    get_target_property(msvc_folder ${libraryName} FOLDER)
-    if (NOT ${msvc_folder} MATCHES ".*NOTFOUND")
-      set_target_properties(${testTargetName} PROPERTIES FOLDER ${msvc_folder})
-    endif()
-  endif()
-endfunction()
 
+  add_test(NAME ${crt_OUTPUT_TEST_TARGET} COMMAND ${crt_OUTPUT_TEST_TARGET})
+endfunction()
 
 function (crt_registertest)
   set(options 
-    INSOURCE_TEST
+    TEST_INPLACE
   )
   set(one_value_args
+    LIBRARY
     INPUT_OBJECT_LIBRARY
     OUTPUT_LIBRARY_NAME
     OUTPUT_LIBRARY_TYPE
@@ -71,16 +70,21 @@ function (crt_registertest)
   
   cmake_parse_arguments(crt "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
-  message("crt_registertest " ${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_TEST_TARGET})
-  crt_addincludepath(${crt_INPUT_OBJECT_LIBRARY})
-  if (${crt_OUTPUT_LIBRARY_TYPE} MATCHES "STATIC")
-    add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}>)
+  if (crt_TEST_INPLACE)
+    message("crt_registertest TEST_INPLACE" ${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_TEST_TARGET})
+    crt_addincludepath(${crt_INPUT_OBJECT_LIBRARY})
+    if (${crt_OUTPUT_LIBRARY_TYPE} MATCHES "STATIC")
+      add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}>)
+    else()
+      add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}> ${crt_dynamic_test_file})
+      target_link_libraries(${crt_OUTPUT_LIBRARY_NAME} ${crt_dynamic_test_link})
+    endif()
+    crt_placetarget_insamesolutionfolder(${crt_OUTPUT_LIBRARY_NAME} ${crt_INPUT_OBJECT_LIBRARY})
+    crt_addincludepath(${crt_OUTPUT_LIBRARY_NAME})
+    crt_maketesttarget(TRUE ${crt_INPUT_OBJECT_LIBRARY} ${crt_OUTPUT_TEST_TARGET} "${crt_TEST_SOURCES}")
   else()
-    add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}> ${crt_dynamic_test_file})
-    target_link_libraries(${crt_OUTPUT_LIBRARY_NAME} ${crt_dynamic_test_link})
+    message("crt_registertest OUTER TESTS" ${crt_LIBRARY} ${crt_OUTPUT_TEST_TARGET})
+    crt_maketesttarget(FALSE ${crt_LIBRARY} ${crt_OUTPUT_TEST_TARGET} "${crt_TEST_SOURCES}")
   endif()
-  crt_placetarget_insamesolutionfolder(${crt_OUTPUT_LIBRARY_NAME} ${crt_INPUT_OBJECT_LIBRARY})
-  crt_addincludepath(${crt_OUTPUT_LIBRARY_NAME})
-  crt_maketesttarget(${crt_INPUT_OBJECT_LIBRARY} ${crt_OUTPUT_TEST_TARGET} "${crt_TEST_SOURCES}")
-  add_test(NAME ${crt_OUTPUT_TEST_TARGET} COMMAND ${crt_OUTPUT_TEST_TARGET})
+
 endfunction()

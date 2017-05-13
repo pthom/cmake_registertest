@@ -4,7 +4,7 @@ This is a set of cmake utilites in order to make it easy to add unit tests to a 
 
 It provides a cmake function `crt_registertest()` with the following features :
 
-* Automatic discovery of the tests (outside of *even inside* the library source files)
+* Automatic discovery of the tests (*outside* of even *inside* the library source files)
 * Automatic creation of an executable target for the tests, and registration with `ctest` (i.e `make test`)
 * Automatic link the test target with the test library (providing an approriate main() function)
 * Automatic inclusion of the test library include path
@@ -54,10 +54,12 @@ crt_registertest(
 ```
 
 This will :
-1. Append the test library include path to your `TEST_SOURCES`
-2. create an executable test target (MyLibraryTest) for your library
-3. register it as a cmake test (so that `ctest` or `make test`) will launch it.
+1. Create an executable test target (MyLibraryTest) for your library.
+2. Register it as a cmake test (so that `ctest` or `make test`) will launch it.
+3. Link this test target with your library
+4. Append the test library include path to your `TEST_SOURCES`
 
+For an example, see [example_doctest_outertests](example_doctest_outertests)
 
 #### Case 2 : your test code resides in separate files
 
