@@ -95,9 +95,9 @@ For an example, see [example_doctest](examples/example_doctest):
 
 ## Detailed steps :
 
-#### Step 1 : include cmake_registertest in your project as well as your test library
+### Step 1 : project structure
 
-The structure of your project should look as the tree shown below:
+The structure of your project should resemble the tree shown below:
 
 ```
 YourProject/
@@ -127,22 +127,29 @@ YourProject/
 ```
 
 
+### Step 2 : Modify your main CMakeList.txt file
 
-For example (with catch)
-* copy or reference catch, doctest, or googletest  
+#### Typical main CMakeList.txt file content
+Example using doctest:
+```cmake
+cmake_minimum_required(VERSION 3.0)
+project(my_project)
+set (crt_test_lib_location ${CMAKE_SOURCE_DIR}/doctest)
+include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_doctest.cmake")
+enable_testing()
+add_subdirectory(MyLibrary)
+```
 
-
-
-#### Step 2 : Set your test library path:
+#### Step 2.1 : test library path
 Inside your main `CMakeLists.txt`, set the path to the include path of your test library (catch, doctest or googletest)
 Depending upon your test library, include one of the 3 lines below:
-```
+```cmake
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/catch)
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/doctest)
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/gtest/include)
 ```
 
-#### Step 3 : Include the script in your main CMakeLists.txt file
+#### Step 2.2 : Include the script in your main CMakeLists.txt file
 *After* having set `rsl_test_lib_location` include the correct script.
 
 Depending upon your test library, include one of the 3 lines below:
@@ -151,17 +158,17 @@ Depending upon your test library, include one of the 3 lines below:
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_catch.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_googletest.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_doctest.cmake")
-````
+```
 
 
-#### Step 4 : enable tests for your project
+#### Step 2.3 : enable tests for your project
 Enable tests in cmake, by adding the following line to your project's main `CMakeLists.txt` file:
 
-```
+```cmake
 enable_testing()
 ```
 
-### Step 5 : Register tests for your library
+### Step 3 : Register tests for your library
 
 in the `CMakeLists.txt` of your library, call `crt_registertest()`
 
