@@ -1,3 +1,6 @@
 [submodule "examples/thirdparty_testlibs/googletest"]
 	path = examples/thirdparty_testlibs/googletest
 	url = https://github.com/google/googletest.git
+[submodule "examples/thirdparty_testlibs/onqtam_ucm"]
+	path = examples/thirdparty_testlibs/onqtam_ucm
+	url = https://github.com/onqtam/ucm.git
