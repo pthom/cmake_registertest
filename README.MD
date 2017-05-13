@@ -17,14 +17,16 @@ The [doctest](https://github.com/onqtam/doctest) documentation says rightfully:
 
 > Tests can be considered a form of documentation and should be able to reside near the production code which they test.
 
-Unfortunately, the self-registration of the tests does not work as desired when their code is inside the library source code: your tests might not be launched at all! This is due to the fact that the linker often strips the self-registration code when it is inside a library.
+However, storing the test code is inside a library is often cumbersome : your tests might not be launched at all! The linker often strips the self-registration code when it is inside a library. 
 
-For a more thorough explanation, see:
+This project provides a solution that enables to have tests both inside the library sources, as well as inside separate source files.
+
+For a more information about the possible issues that this project attempts to solve, see:
 * [Catch : "issue 421 - Document How to make Catch tests in a library be found"](https://github.com/philsquared/Catch/issues/421) 
 * [Doctest: issue 21 - Tests inside a static library](https://github.com/onqtam/doctest/issues/21)
 * [Googletest primer : important-note-for-visual-c-users](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md#important-note-for-visual-c-users>)
 
-This project provides a solution that enables to have tests both inside the library sources, as well as inside separate source files.
+
 
 ----
 
@@ -42,7 +44,7 @@ This project was tested under OSX, Windows and Linux
 
 Two cases are possible:
 
-#### Case 1 : your test code resides in separate files
+### Case 1 : your test code resides in separate files
 
 ```cmake
 add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
@@ -59,9 +61,12 @@ This will :
 3. Link this test target with your library
 4. Append the test library include path to your `TEST_SOURCES`
 
-For an example, see [example_doctest_outertests](example_doctest_outertests)
+For an example, see [example_doctest_outertests](examples/example_doctest_outertests):
+* [Main CMakeLists.txt](examples/example_doctest_outertests/CMakeLists.txt)
+* [Library CMakeLists.txt](examples/example_doctest_outertests/MyLibrary/CMakeLists.txt)
 
-#### Case 2 : your test code resides in separate files
+
+### Case 2 : your test code resides in the library source code (as well as separate files)
 
 ```cmake
 add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
@@ -75,17 +80,17 @@ crt_registertest(
 )
 ```
 
-
-
 This will :
-1. First compile your library source files (lib1.cpp and lib2.cpp) as an "object" library.
-2. create a static or dynamic library from these files (see `OUTPUT_LIBRARY_NAME` and `OUTPUT_LIBRARY_TYPE`)
-2.
-1. Allow the inclusion of tests inside the library source code (if TEST_INPLACE is set)
-2. append the test include path to your library (if TEST_INPLACE is set)
-3. create an executable test target (MyLibraryTest) for your library
-4. register it as a cmake test (so that `ctest` or `make test`) will launch it.
+1. First compile your library source files (lib1.cpp and lib2.cpp) as an "object" library. 
+2. Create a static or dynamic library from these files (see `OUTPUT_LIBRARY_NAME` and `OUTPUT_LIBRARY_TYPE`). Your source files will be compiled only once.
+3. Create an executable test target (MyLibraryTest) for your library.
+4. Register it as a cmake test (so that `ctest` or `make test`) will launch it.
+5. Append the test library include path to your `TEST_SOURCES`, as well as to the library sources
+6. Make sure that all tests are run (whether they are inside the library source files or inside `TEST_SOURCES`)
 
+For an example, see [example_doctest](examples/example_doctest):
+* [Main CMakeLists.txt](examples/example_doctest/CMakeLists.txt)
+* [Library CMakeLists.txt](examples/example_doctest/MyLibrary/CMakeLists.txt)
 
 
 ## Detailed steps :
