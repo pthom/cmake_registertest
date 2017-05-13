@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 project(example_doctest)
 
 set (crt_test_lib_location ${CMAKE_SOURCE_DIR}/../thirdparty_testlibs/doctest)
-include("${CMAKE_SOURCE_DIR}/../../src/registertest_doctest.cmake")
+include("${CMAKE_SOURCE_DIR}/../../src/crt_registertest_doctest.cmake")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 enable_testing()
