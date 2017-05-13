@@ -26,6 +26,7 @@ endfunction()
 
 function (crt_maketesttarget objectLibraryName testTargetName)
   add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_main_test_file})
+  target_link_libraries(${testTargetName} ${crt_main_test_link})
   crt_addincludepath(${testTargetName})
   # place the test target in the same msvc solution folder
   get_target_property(msvc_folder_testtarget ${testTargetName} FOLDER)
@@ -50,6 +51,7 @@ function (cmake_registertest objectLibraryName libraryName libraryType testTarge
     add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}>)
   else()
     add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_dynamic_test_file})
+    target_link_libraries(${libraryName} ${crt_dynamic_test_link})
   endif()
   crt_addincludepath(${libraryName})
   crt_maketesttarget(${objectLibraryName} ${testTargetName})
