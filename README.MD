@@ -4,10 +4,10 @@ This is a set of cmake utilites in order to make it easy to add unit tests to a 
 
 It provides a cmake function `crt_registertest()` with the following features :
 
-* Automatic discovery of the tests (even inside the library source files)
-* `target_include_directories([catch|googletest|doctest])`
-* add an executable target for the tests, and register it with ctest
-* link the test target with the test library and provide an approriate main() function
+* Automatic discovery of the tests (outside of *even inside* the library source files)
+* Automatic creation of an executable target for the tests, and registration with `ctest` (i.e `make test`)
+* Automatic link the test target with the test library (providing an approriate main() function)
+* Automatic inclusion of the test library include path
 
 ----
 ## Motto : 
@@ -38,13 +38,34 @@ This project was tested under OSX, Windows and Linux
 
 ## Quick usage instructions
 
-`src/crt_registerstaticlibrary.cmake` provides a `crt_registertest`()` functions that make it possible to add tests to a library, using a one-liner instruction in your `CMakeList.txt` file.
+`src/crt_registerstaticlibrary.cmake` provides a `crt_registertest()` functions that make it possible to add tests to a library, using a simple instruction in the `CMakeList.txt` of your library.
 
-For example :
+Two cases are possible:
+
+#### Case 1 : your test code resides in separate files
+
 ```cmake
-add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
+add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
 crt_registertest(
-  INPUT_OBJECT_LIBRARY MyLibrary_Object
+  LIBRARY MyLibrary
+  OUTPUT_TEST_TARGET MyLibraryTest
+  TEST_SOURCES lib3_test.cpp lib4_test.cpp 
+)
+```
+
+This will :
+1. Append the test library include path to your `TEST_SOURCES`
+2. create an executable test target (MyLibraryTest) for your library
+3. register it as a cmake test (so that `ctest` or `make test`) will launch it.
+
+
+#### Case 2 : your test code resides in separate files
+
+```cmake
+add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
+crt_registertest(
+  TEST_INPLACE  
+  INPUT_OBJECT_LIBRARY MyLibrary
   OUTPUT_LIBRARY_NAME MyLibrary_Static
   OUTPUT_LIBRARY_TYPE STATIC
   OUTPUT_TEST_TARGET MyLibraryTest
@@ -52,9 +73,14 @@ crt_registertest(
 )
 ```
 
-This one-liner will :
-1. ensure that *all* tests are actually run 
-2. append the test include path to your library
+
+
+This will :
+1. First compile your library source files (lib1.cpp and lib2.cpp) as an "object" library.
+2. create a static or dynamic library from these files (see `OUTPUT_LIBRARY_NAME` and `OUTPUT_LIBRARY_TYPE`)
+2.
+1. Allow the inclusion of tests inside the library source code (if TEST_INPLACE is set)
+2. append the test include path to your library (if TEST_INPLACE is set)
 3. create an executable test target (MyLibraryTest) for your library
 4. register it as a cmake test (so that `ctest` or `make test`) will launch it.
 
