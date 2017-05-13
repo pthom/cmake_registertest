@@ -7,9 +7,9 @@ add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
 # will be automatically placed in the same solution folder under Visual Studio
 set_target_properties(MyLibrary_Object PROPERTIES FOLDER MyLibraries)
 
-# cmake_registertest will then create a static (or shared) library from the object library 
+# crt_registertest will then create a static (or shared) library from the object library 
 # and a test executable
-cmake_registertest(
+crt_registertest(
    # Name of the input object library 
   INPUT_OBJECT_LIBRARY MyLibrary_Object
   # Name of the output shared or static library that will be created from the object library 

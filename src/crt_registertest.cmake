@@ -54,11 +54,8 @@ function (crt_maketesttarget objectLibraryName testTargetName testSources)
   endif()
 endfunction()
 
-function (crt_registercmaketest testTargetName)
-  add_test(NAME ${testTargetName} COMMAND ${testTargetName})
-endfunction()
 
-function (cmake_registertest)
+function (crt_registertest)
   set(options 
     INSOURCE_TEST
   )
@@ -72,9 +69,9 @@ function (cmake_registertest)
     TEST_SOURCES
   )
   
-  cmake_parse_arguments(crt "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN} )
+  cmake_parse_arguments(crt "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
-  message("cmake_registertest " ${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_TEST_TARGET})
+  message("crt_registertest " ${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_TEST_TARGET})
   crt_addincludepath(${crt_INPUT_OBJECT_LIBRARY})
   if (${crt_OUTPUT_LIBRARY_TYPE} MATCHES "STATIC")
     add_library(${crt_OUTPUT_LIBRARY_NAME} ${crt_OUTPUT_LIBRARY_TYPE} $<TARGET_OBJECTS:${crt_INPUT_OBJECT_LIBRARY}>)
@@ -85,5 +82,5 @@ function (cmake_registertest)
   crt_placetarget_insamesolutionfolder(${crt_OUTPUT_LIBRARY_NAME} ${crt_INPUT_OBJECT_LIBRARY})
   crt_addincludepath(${crt_OUTPUT_LIBRARY_NAME})
   crt_maketesttarget(${crt_INPUT_OBJECT_LIBRARY} ${crt_OUTPUT_TEST_TARGET} "${crt_TEST_SOURCES}")
-  crt_registercmaketest(${crt_OUTPUT_TEST_TARGET})
+  add_test(NAME ${crt_OUTPUT_TEST_TARGET} COMMAND ${crt_OUTPUT_TEST_TARGET})
 endfunction()

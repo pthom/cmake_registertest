@@ -10,7 +10,7 @@ endif()
 
 add_subdirectory(../thirdparty_testlibs/googletest/googletest googletest_build)
 set (crt_test_lib_location ${CMAKE_SOURCE_DIR}/../thirdparty_testlibs/googletest/googletest/include)
-include("${CMAKE_SOURCE_DIR}/../../src/googletest_registertest.cmake")
+include("${CMAKE_SOURCE_DIR}/../../src/registertest_googletest.cmake")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 enable_testing()
