@@ -1,5 +1,3 @@
-set(sources lib1.cpp lib2.cpp)
-
 # Step 1 : add include directory
 include_directories("../../doctest")
 

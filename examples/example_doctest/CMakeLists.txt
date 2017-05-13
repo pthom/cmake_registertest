@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(example_register)
+project(example_doctest)
 
 set (crt_test_lib_location ${CMAKE_SOURCE_DIR}/../doctest)
 include("${CMAKE_SOURCE_DIR}/../../src/doctest_registertest.cmake")

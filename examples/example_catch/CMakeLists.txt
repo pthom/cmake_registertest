@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(example_register)
+project(example_catch)
 
 set (crt_test_lib_location ${CMAKE_SOURCE_DIR}/../catch)
 include("${CMAKE_SOURCE_DIR}/../../src/catch_registertest.cmake")
