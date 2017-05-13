@@ -1,3 +1,11 @@
+
+*Note:* in order to build the googletest examples, you need to retrieve its source code.
+
+Use this command:
+```
+git submodule update --init
+```
+
 ##### Example 1 : test code in separate source files
 
 [example_doctest_outertests](example_doctest_outertests)
@@ -11,7 +19,7 @@
 
 ##### Bare examples
 
-The examples below do not use the `crt_registertest`() function. 
+The examples below do not use the `*crt_registertest`() function. 
 
 They demonstrate the techniques that this project use, directly inside the library `CMakeList.txt` file.
 
