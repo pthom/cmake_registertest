@@ -21,7 +21,7 @@ However, storing the test code is inside a library is often cumbersome : your te
 
 This project provides a solution that enables to have tests both inside the library sources, as well as inside separate source files.
 
-For a more information about the possible issues that this project attempts to solve, see:
+For more information about the possible issues that this project attempts to solve, see:
 * [Catch : "issue 421 - Document How to make Catch tests in a library be found"](https://github.com/philsquared/Catch/issues/421) 
 * [Doctest: issue 21 - Tests inside a static library](https://github.com/onqtam/doctest/issues/21)
 * [Googletest primer : important-note-for-visual-c-users](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md#important-note-for-visual-c-users>)
@@ -160,3 +160,4 @@ in the `CMakeLists.txt` of your library, call crt_registertest()
 
 ## detailed information about crt_registertest()  
 
+See the [examples](examples)

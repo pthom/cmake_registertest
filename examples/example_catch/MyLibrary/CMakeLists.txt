@@ -10,6 +10,8 @@ set_target_properties(MyLibrary_Object PROPERTIES FOLDER MyLibraries)
 # crt_registertest will then create a static (or shared) library from the object library 
 # and a test executable
 crt_registertest(
+  # Allow test code in the library source files
+  TEST_INPLACE
    # Name of the input object library 
   INPUT_OBJECT_LIBRARY MyLibrary_Object
   # Name of the output shared or static library that will be created from the object library 

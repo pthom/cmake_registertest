@@ -1,17 +1,19 @@
 # Create a library with the "OBJECT" type 
 # It will be turned into a static or shared library later (see below)
 # The tests that are stored in library source files will be auto-discovered
-add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
+add_library(MyLibrary OBJECT lib1.cpp lib2.cpp)
 
 # set_target_properties is just here to showcase that tests target 
 # will be automatically placed in the same solution folder under Visual Studio
-set_target_properties(MyLibrary_Object PROPERTIES FOLDER MyLibraries)
+set_target_properties(MyLibrary PROPERTIES FOLDER MyLibraries)
 
 # crt_registertest will then create a static (or shared) library from the object library 
 # and a test executable
 crt_registertest(
+  # Allow test code in the library source files
+  TEST_INPLACE
    # Name of the input object library 
-  INPUT_OBJECT_LIBRARY MyLibrary_Object
+  INPUT_OBJECT_LIBRARY MyLibrary
   # Name of the output shared or static library that will be created from the object library 
   OUTPUT_LIBRARY_NAME MyLibrary_Static
   # type of the output library (SHARED, STATIC or MODULE) 
