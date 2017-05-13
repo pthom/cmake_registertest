@@ -20,26 +20,13 @@ if (MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
-
 function (crt_addincludepath libraryName)
   target_include_directories(${libraryName} PUBLIC ${crt_test_lib_location} )
 endfunction()
 
-
-# function (crt_appendregistermainfiletosources libraryName)
-#   get_target_property(sources ${libraryName} SOURCES)
-
-#   # append crt_registerstaticlibrary.cpp to the library sources if needed
-#   if (NOT ";${SOURCES};" MATCHES ";crt_registerstaticlibrary.cpp;")
-#     set(sourcesWithMainRegisterFile ${SOURCES} crt_registerstaticlibrary.cpp)
-#     target_sources(${libraryName} PRIVATE ${sourcesWithMainRegisterFile})
-#   endif()
-# endfunction()
-
-function (crt_maketesttarget libraryName testTargetName)
-  add_executable(${testTargetName} ${crt_main_test_file})
-  target_link_libraries(${testTargetName} ${libraryName})
-
+function (crt_maketesttarget objectLibraryName testTargetName)
+  add_executable(${testTargetName} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_main_test_file})
+  crt_addincludepath(${testTargetName})
   # place the test target in the same msvc solution folder
   get_target_property(msvc_folder_testtarget ${testTargetName} FOLDER)
   if (${msvc_folder_testtarget} MATCHES ".*NOTFOUND")
@@ -54,11 +41,17 @@ function (crt_registercmaketest testTargetName)
   add_test(NAME ${testTargetName} COMMAND ${testTargetName})
 endfunction()
 
-
-function (cmake_registertest libraryName testTargetName)
+function (cmake_registertest objectLibraryName libraryName libraryType testTargetName)
   # message("cmake_registertest " ${libraryName} ${testTargetName})
+  crt_addincludepath(${objectLibraryName})
+
+  message("libraryType=${libraryType}")
+  if (${libraryType} MATCHES "STATIC")
+    add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}>)
+  else()
+    add_library(${libraryName} ${libraryType} $<TARGET_OBJECTS:${objectLibraryName}> ${crt_dynamic_test_file})
+  endif()
   crt_addincludepath(${libraryName})
-  # crt_appendregistermainfiletosources(${libraryName})
-  # crt_maketesttarget(${libraryName} ${testTargetName})
-  # crt_registercmaketest(${testTargetName})
+  crt_maketesttarget(${objectLibraryName} ${testTargetName})
+  crt_registercmaketest(${testTargetName})
 endfunction()
