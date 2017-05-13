@@ -7,7 +7,7 @@ add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
 
 # 
 # Step 3 : turn the object library into a static or shared library. 
-# (Only Step 2i/ or step 2ii/ is required depending on your need)
+# (Only Step 3i/ or step 3ii/ is required depending on your need)
 #
 # Step 3 i/ (case of a static library) : create a static library from the object library
 add_library(MyLibrary_Static STATIC $<TARGET_OBJECTS:MyLibrary_Object>)
