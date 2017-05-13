@@ -129,8 +129,7 @@ YourProject/
 
 ### Step 2 : Modify your main CMakeList.txt file
 
-#### Typical main CMakeList.txt file content
-Example using doctest:
+#### Typical main CMakeList.txt file content (example using doctest)
 ```cmake
 cmake_minimum_required(VERSION 3.0)
 project(my_project)
@@ -140,30 +139,21 @@ enable_testing()
 add_subdirectory(MyLibrary)
 ```
 
-#### Step 2.1 : test library path
-Inside your main `CMakeLists.txt`, set the path to the include path of your test library (catch, doctest or googletest)
+1. Inside your main `CMakeLists.txt`, set the path to the include path of your test library (catch, doctest or googletest)
 Depending upon your test library, include one of the 3 lines below:
 ```cmake
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/catch)
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/doctest)
 set (rsl_test_lib_location ${CMAKE_SOURCE_DIR}/gtest/include)
 ```
-
-#### Step 2.2 : Include the script in your main CMakeLists.txt file
-*After* having set `rsl_test_lib_location` include the correct script.
-
-Depending upon your test library, include one of the 3 lines below:
-
+2. Include the script in your main CMakeLists.txt file
+*After* having set `rsl_test_lib_location` include the correct script.Depending upon your test library, include one of the 3 lines below:
 ```cmake
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_catch.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_googletest.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake_registertest/src/crt_registertest_doctest.cmake")
 ```
-
-
-#### Step 2.3 : enable tests for your project
-Enable tests in cmake, by adding the following line to your project's main `CMakeLists.txt` file:
-
+3. enable tests for your project
 ```cmake
 enable_testing()
 ```
