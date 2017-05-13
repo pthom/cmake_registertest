@@ -1,5 +1,5 @@
 # Step 1 : add include directory
-include_directories("../../doctest")
+include_directories("../../dthirdparty_testlibs/octest")
 
 # Step 2 : make an "OBJECT" library (do not make a static or shared library, it will be done later)
 # This pseudo librairy will only group the object files

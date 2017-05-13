@@ -1,5 +1,5 @@
 # Step 1 : add include directory
-include_directories("../../catch")
+include_directories("../../thirdparty_testlibs/catch")
 
 # Step 2 : make an "OBJECT" library (do not make a static or shared library, it will be done later)
 # This pseudo librairy will only group the object files
