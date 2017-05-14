@@ -2,7 +2,7 @@
 include_directories("../../thirdparty_testlibs/doctest")
 
 # Step 2 : make an "OBJECT" library (do not make a static or shared library, it will be done later)
-# This pseudo librairy will only group the object files
+# This pseudo library will only group the object files
 add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
 
 # 
