@@ -10,7 +10,7 @@ add_library(MyLibrary_Object OBJECT lib1.cpp lib2.cpp)
 # (Only Step 3i/ or step 3ii/ is required depending on your need)
 #
 # Step 3 i/ (case of a static library) : create a static library from the object library
-# add_library(MyLibrary_Static STATIC $<TARGET_OBJECTS:MyLibrary_Object>)
+add_library(MyLibrary_Static STATIC $<TARGET_OBJECTS:MyLibrary_Object>)
 # Step 3 ii/ (case of a dynamic or module library) : create a dynamic library from the object library
 # You will need to also reference the file catch_dynamic.cpp for a successful link 
 add_library(MyLibrary_Shared SHARED $<TARGET_OBJECTS:MyLibrary_Object> ../catch_dynamic.cpp)
