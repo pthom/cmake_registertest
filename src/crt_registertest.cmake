@@ -23,11 +23,11 @@ endif()
 # place the test targets in the same msvc solution folder
 function (crt_placetarget_insamesolutionfolder target target_with_existing_folder)
   get_target_property(msvc_folder_target ${target} FOLDER)
-  message("msvc_folder_target is ${msvc_folder_target}")
+  # message("msvc_folder_target is ${msvc_folder_target}")
   if (${msvc_folder_target} MATCHES ".*NOTFOUND")
-    message("get_target_property(msvc_folder ${target_with_existing_folder} FOLDER)")
+    # message("get_target_property(msvc_folder ${target_with_existing_folder} FOLDER)")
     get_target_property(msvc_folder "${target_with_existing_folder}" FOLDER)
-    message("msvc_folder is ${msvc_folder}")
+    # message("msvc_folder is ${msvc_folder}")
     if (NOT ${msvc_folder} MATCHES ".*NOTFOUND")
       set_target_properties(${target} PROPERTIES FOLDER ${msvc_folder})
     endif()
@@ -54,7 +54,7 @@ function (crt_maketesttarget flagTestInPlace libraryName testTargetName testSour
 endfunction()
 
 function (crt_registertest)
-  set(options 
+  set(options
     TEST_INPLACE
   )
   set(one_value_args
@@ -67,9 +67,9 @@ function (crt_registertest)
   set(multi_value_args
     TEST_SOURCES
   )
-  
+
   cmake_parse_arguments(crt "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
-  
+
   if (crt_TEST_INPLACE)
     if (NOT crt_INPUT_OBJECT_LIBRARY)
       message( FATAL_ERROR "crt_registertest : the INPUT_OBJECT_LIBRARY param is required if using TEST_INPLACE")
